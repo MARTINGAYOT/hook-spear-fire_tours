@@ -264,8 +264,8 @@ p { font-size: 1.05rem; color: var(--text-mid); }
   display: flex;
   align-items: center;
   background:
-    linear-gradient(160deg, rgba(8,28,46,.92) 0%, rgba(0,119,168,.55) 60%, rgba(0,180,216,.25) 100%),
-    url('https://images.unsplash.com/photo-1559548331-f9cb98001426?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat;
+    linear-gradient(160deg, rgba(8,28,46,.75) 0%, rgba(0,119,168,.40) 60%, rgba(0,180,216,.15) 100%),
+    url('reef-hero.jpg') center/cover no-repeat;
   overflow: hidden;
 }
 
