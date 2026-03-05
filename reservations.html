@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Book a snorkeling, spearfishing, fishing or catch-and-cook tour with Hook, Spear &amp; Fire Tours in San Pedro, Belize." />
+  <title>Book a Tour | Hook, Spear &amp; Fire Tours — San Pedro, Belize</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 2rem 0 2.5rem;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .35rem;
+      position: relative;
+    }
+    .step-circle {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: #e2ecf4;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .88rem;
+      transition: var(--transition);
+      position: relative;
+      z-index: 1;
+    }
+    .step.active .step-circle {
+      background: linear-gradient(135deg, var(--ocean), var(--turquoise));
+      color: var(--white);
+      box-shadow: 0 4px 14px rgba(0,119,168,.35);
+    }
+    .step.done .step-circle {
+      background: linear-gradient(135deg, var(--coral), var(--ember));
+      color: var(--white);
+    }
+    .step-label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+    .step.active .step-label { color: var(--ocean); }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #e2ecf4;
+      margin: 0 .5rem;
+      margin-bottom: 1.5rem;
+      max-width: 80px;
+    }
+
+    .tour-type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .85rem;
+      margin-bottom: 1.25rem;
+    }
+    .tour-type-card {
+      border: 2px solid #dde8f0;
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      background: var(--white);
+    }
+    .tour-type-card:hover {
+      border-color: var(--turquoise);
+      background: rgba(0,180,216,.04);
+    }
+    .tour-type-card.selected {
+      border-color: var(--ocean);
+      background: rgba(0,119,168,.06);
+    }
+    .tour-type-card input[type="radio"] { display: none; }
+    .tour-card-icon { font-size: 1.6rem; }
+    .tour-card-text strong { display: block; font-size: .92rem; color: var(--navy); font-weight: 600; }
+    .tour-card-text span   { font-size: .78rem; color: var(--text-light); }
+
+    .guest-counter {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .counter-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid #dde8f0;
+      background: var(--white);
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy);
+      transition: var(--transition);
+    }
+    .counter-btn:hover {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--white);
+    }
+    .counter-value {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--navy);
+      min-width: 2ch;
+      text-align: center;
+    }
+
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .success-icon {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 8px 24px rgba(34,197,94,.3);
+    }
+    .success-screen h3 { font-size: 1.6rem; margin-bottom: .75rem; }
+    .success-screen p  { margin-bottom: 2rem; max-width: 420px; margin-inline: auto; }
+
+    .price-estimate {
+      background: linear-gradient(135deg, rgba(0,180,216,.08), rgba(0,119,168,.05));
+      border: 1px solid rgba(0,180,216,.2);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .price-estimate h5 {
+      font-family: var(--font-body);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ocean);
+      margin-bottom: .85rem;
+    }
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: .88rem;
+      color: var(--text-mid);
+      margin-bottom: .4rem;
+    }
+    .price-row.total {
+      border-top: 1px solid rgba(0,180,216,.2);
+      padding-top: .75rem;
+      margin-top: .75rem;
+      font-weight: 700;
+      color: var(--navy);
+      font-size: .98rem;
+    }
+    .price-note {
+      font-size: .75rem;
+      color: var(--text-light);
+      margin-top: .65rem;
+    }
+
+    @media (max-width: 600px) {
+      .tour-type-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar scrolled" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-main">Hook, Spear &amp; Fire</span>
+      <span class="nav-logo-sub">San Pedro, Belize</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#services">Tours</a></li>
+      <li><a href="index.html#gallery">Gallery</a></li>
+      <li><a href="index.html#testimonials">Reviews</a></li>
+      <li><a href="reservations.html" class="nav-cta">Book Now</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+<header class="reservations-hero">
+  <div class="container">
+    <span class="section-label" style="color:var(--aqua)">Reservations</span>
+    <h1>Book Your Adventure</h1>
+    <p>
+      Fill in the form below and we'll confirm your tour within
+      24 hours. Questions? Call or WhatsApp us directly.
+    </p>
+  </div>
+</header>
+
+
+<section class="reservations-section">
+  <div class="container reservations-layout">
+
+    <div class="form-card fade-up">
+
+      <div class="step-indicator">
+        <div class="step active" id="step1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Tour</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Details</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Contact</span>
+        </div>
+      </div>
+
+      <form id="bookingForm" novalidate>
+
+        <!-- STEP 1 -->
+        <div class="form-step" id="formStep1">
+          <h2>Choose Your Experience</h2>
+          <p>Select the type of tour you're most interested in.</p>
+
+          <div class="form-section-title">Tour Category</div>
+          <div class="tour-type-grid">
+
+            <label class="tour-type-card" id="card-snorkeling">
+              <input type="radio" name="tourCategory" value="snorkeling" />
+              <span class="tour-card-icon">&#128027;</span>
+              <div class="tour-card-text">
+                <strong>Snorkeling Tours</strong>
+                <span>From $45 / person</span>
+              </div>
+            </label>
+
+            <label class="tour-type-card" id="card-spearfishing">
+              <input type="radio" name="tourCategory" value="spearfishing" />
+              <span class="tour-card-icon">&#127919;</span>
+              <div class="tour-card-text">
+                <strong>Spearfishing</strong>
+                <span>From $95 / person</span>
+              </div>
+            </label>
+
+            <label class="tour-type-card" id="card-fishing">
+              <input type="radio" name="tourCategory" value="fishing" />
+              <span class="tour-card-icon">&#127907;</span>
+              <div class="tour-card-text">
+                <strong>Fishing Charters</strong>
+                <span>From $325 / charter</span>
+              </div>
+            </label>
+
+            <label class="tour-type-card" id="card-catchcook">
+              <input type="radio" name="tourCategory" value="catchcook" />
+              <span class="tour-card-icon">&#128293;</span>
+              <div class="tour-card-text">
+                <strong>Catch &amp; Cook</strong>
+                <span>From $85 / person</span>
+              </div>
+            </label>
+
+          </div>
+
+          <div class="form-group" id="specificTourGroup" style="display:none;">
+            <label for="specificTour">Specific Tour <span class="required">*</span></label>
+            <select class="form-control" id="specificTour" name="specificTour">
+              <option value="">Select a tour...</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="tourDate">Preferred Date <span class="required">*</span></label>
+              <input type="date" class="form-control" id="tourDate" name="tourDate" />
+            </div>
+            <div class="form-group">
+              <label for="timePreference">Preferred Start Time</label>
+              <select class="form-control" id="timePreference" name="timePreference">
+                <option value="">No preference</option>
+                <option value="early-morning">Early Morning (6:00–7:00 AM)</option>
+                <option value="morning">Morning (7:00–9:00 AM)</option>
+                <option value="mid-morning">Mid-Morning (9:00–11:00 AM)</option>
+                <option value="afternoon">Afternoon (1:00–3:00 PM)</option>
+                <option value="sunset">Sunset (4:00–6:00 PM)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="text-align:right; margin-top:1rem;">
+            <button type="button" class="btn btn-ocean" id="toStep2">
+              Next: Guest Details &#8594;
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="form-step" id="formStep2" style="display:none;">
+          <h2>Guest Details</h2>
+          <p>Tell us a little about your group so we can prepare the perfect experience.</p>
+
+          <div class="form-section-title">Group Size</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Adults</label>
+              <div class="guest-counter">
+                <button type="button" class="counter-btn" data-target="adults" data-action="minus">&#8722;</button>
+                <span class="counter-value" id="adults-display">2</span>
+                <button type="button" class="counter-btn" data-target="adults" data-action="plus">&#43;</button>
+                <input type="hidden" id="adults" name="adults" value="2" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Children (under 14)</label>
+              <div class="guest-counter">
+                <button type="button" class="counter-btn" data-target="children" data-action="minus">&#8722;</button>
+                <span class="counter-value" id="children-display">0</span>
+                <button type="button" class="counter-btn" data-target="children" data-action="plus">&#43;</button>
+                <input type="hidden" id="children" name="children" value="0" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section-title">Experience &amp; Preferences</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="experienceLevel">Experience Level</label>
+              <select class="form-control" id="experienceLevel" name="experienceLevel">
+                <option value="beginner">Beginner — Never done this before</option>
+                <option value="some">Some experience — done it a few times</option>
+                <option value="intermediate">Intermediate — comfortable and capable</option>
+                <option value="advanced">Advanced — experienced adventurer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="swimAbility">Swimming Ability</label>
+              <select class="form-control" id="swimAbility" name="swimAbility">
+                <option value="non-swimmer">Non-swimmer (life vest provided)</option>
+                <option value="basic">Basic — comfortable in shallow water</option>
+                <option value="comfortable" selected>Comfortable in open water</option>
+                <option value="strong">Strong swimmer / diver</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="dietaryNeeds">Dietary Needs / Allergies</label>
+            <input type="text" class="form-control" id="dietaryNeeds" name="dietaryNeeds"
+              placeholder="e.g. shellfish allergy, vegetarian, etc." />
+          </div>
+
+          <div class="form-group">
+            <label for="specialRequests">Special Requests or Notes</label>
+            <textarea class="form-control" id="specialRequests" name="specialRequests"
+              placeholder="Birthday? Anniversary? Specific fish you want to target? Let us know anything that will make your trip extra special."></textarea>
+          </div>
+
+          <div class="price-estimate" id="priceEstimate" style="display:none;">
+            <h5>Estimated Price</h5>
+            <div class="price-row">
+              <span id="estimateLabel">Tour</span>
+              <span id="estimateBase">—</span>
+            </div>
+            <div class="price-row" id="estimateChildRow" style="display:none;">
+              <span>Children (half price)</span>
+              <span id="estimateChild">—</span>
+            </div>
+            <div class="price-row total">
+              <span>Estimated Total</span>
+              <span id="estimateTotal">—</span>
+            </div>
+            <p class="price-note">
+              * Final price confirmed at booking. Charters priced per boat,
+              per-person tours priced per guest. Prices in USD.
+            </p>
+          </div>
+
+          <div style="display:flex; gap:1rem; margin-top:1.5rem; justify-content:space-between;">
+            <button type="button" class="btn btn-outline" id="backToStep1"
+              style="border-color:#dde8f0;color:var(--text-mid);">
+              &#8592; Back
+            </button>
+            <button type="button" class="btn btn-ocean" id="toStep3">
+              Next: Contact Info &#8594;
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="form-step" id="formStep3" style="display:none;">
+          <h2>Your Contact Details</h2>
+          <p>We'll send a confirmation and any additional info to the details below.</p>
+
+          <div class="form-section-title">Personal Information</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name <span class="required">*</span></label>
+              <input type="text" class="form-control" id="firstName" name="firstName"
+                placeholder="Jane" required />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name <span class="required">*</span></label>
+              <input type="text" class="form-control" id="lastName" name="lastName"
+                placeholder="Smith" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address <span class="required">*</span></label>
+            <input type="email" class="form-control" id="email" name="email"
+              placeholder="jane@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone / WhatsApp Number <span class="required">*</span></label>
+            <input type="tel" class="form-control" id="phone" name="phone"
+              placeholder="+1 (555) 000-0000" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="country">Country of Residence</label>
+              <input type="text" class="form-control" id="country" name="country"
+                placeholder="United States" />
+            </div>
+            <div class="form-group">
+              <label for="hearAbout">How Did You Hear About Us?</label>
+              <select class="form-control" id="hearAbout" name="hearAbout">
+                <option value="">Select one...</option>
+                <option value="google">Google Search</option>
+                <option value="tripadvisor">TripAdvisor</option>
+                <option value="instagram">Instagram</option>
+                <option value="facebook">Facebook</option>
+                <option value="friend">Friend / Family Recommendation</option>
+                <option value="hotel">Hotel / Resort Recommendation</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label style="display:flex; align-items:flex-start; gap:.6rem; cursor:pointer;">
+              <input type="checkbox" id="agreeTerms" name="agreeTerms"
+                style="margin-top:.25rem; accent-color:var(--ocean);" />
+              <span style="font-size:.88rem; color:var(--text-mid);">
+                I agree to the
+                <a href="#" style="color:var(--ocean);">cancellation policy</a>
+                and understand that a 50% deposit may be required to secure my booking.
+              </span>
+            </label>
+          </div>
+
+          <div class="form-submit">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              &#127908; Send Reservation Request
+            </button>
+          </div>
+          <p class="form-note">
+            We'll reply within 24 hours to confirm your booking and arrange payment.
+            No credit card required now.
+          </p>
+
+          <div style="display:flex; gap:1rem; margin-top:1rem; justify-content:flex-start;">
+            <button type="button" class="btn btn-outline" id="backToStep2"
+              style="border-color:#dde8f0;color:var(--text-mid); padding:.6rem 1.2rem; font-size:.88rem;">
+              &#8592; Back to Guest Details
+            </button>
+          </div>
+        </div>
+
+        <!-- SUCCESS -->
+        <div class="success-screen" id="successScreen">
+          <div class="success-icon">&#10003;</div>
+          <h3>Request Sent!</h3>
+          <p>
+            Thank you for your reservation request. We'll review your
+            details and send a confirmation to your email within 24
+            hours. We can't wait to take you out on the reef!
+          </p>
+          <a href="index.html" class="btn btn-ocean">&#8592; Back to Homepage</a>
+        </div>
+
+      </form>
+    </div>
+
+
+    <aside class="booking-sidebar fade-up">
+
+      <div class="info-card info-card-highlight">
+        <div class="info-card-icon">&#128222;</div>
+        <h4>Questions? Call Us</h4>
+        <p>We're available 7 days a week, 6 AM – 6 PM Belize time.</p>
+        <div style="margin-top:1rem;">
+          <div class="contact-detail">&#128222; +501 226-XXXX</div>
+          <div class="contact-detail">&#128241; WhatsApp Available</div>
+          <div class="contact-detail">&#9993; hello@hookspearfire.com</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon">&#9989;</div>
+        <h4>What's Always Included</h4>
+        <ul class="info-card-list">
+          <li>All snorkeling or fishing equipment</li>
+          <li>Certified, experienced guide / captain</li>
+          <li>Life jackets &amp; safety gear</li>
+          <li>Water, soft drinks &amp; snacks</li>
+          <li>Reef conservation fee</li>
+          <li>Pick-up from San Pedro Town dock</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon">&#128337;</div>
+        <h4>Best Time to Visit</h4>
+        <p style="margin-bottom:.65rem;">
+          Belize is beautiful year-round. For the calmest seas
+          and best visibility, aim for:
+        </p>
+        <ul class="info-card-list">
+          <li>November – April (dry season, calm seas)</li>
+          <li>June 15 – Feb 14 (lobster season!)</li>
+          <li>Year-round for fishing &amp; snorkeling</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon">&#128196;</div>
+        <h4>Cancellation Policy</h4>
+        <ul class="info-card-list">
+          <li>Full refund: 72+ hours before tour</li>
+          <li>50% refund: 24–72 hours before</li>
+          <li>No refund: less than 24 hours</li>
+          <li>Weather cancellations: always refunded</li>
+        </ul>
+      </div>
+
+      <div class="info-card" style="background:var(--sand); border:1px solid #e8e0ce;">
+        <div class="info-card-icon">&#127775;</div>
+        <h4>Rated 4.9 / 5 Stars</h4>
+        <p style="margin-bottom:.75rem;">
+          Over 400 reviews on TripAdvisor and Google.
+          Consistently ranked the #1 tour operator in San Pedro.
+        </p>
+        <div style="display:flex; gap:.2rem;">
+          <span style="color:var(--gold); font-size:1.2rem;">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <span class="nav-logo-main">Hook, Spear &amp; Fire</span>
+          <span class="nav-logo-sub">San Pedro, Belize</span>
+        </div>
+        <p class="footer-tagline">
+          Family-owned since 2009. We live on this reef,
+          we protect this reef, and we love nothing more
+          than sharing it with visitors from around the world.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Our Tours</h5>
+        <ul class="footer-links">
+          <li><a href="index.html#services">Snorkeling Tours</a></li>
+          <li><a href="index.html#services">Spearfishing</a></li>
+          <li><a href="index.html#services">Fishing Charters</a></li>
+          <li><a href="index.html#services">Catch &amp; Cook</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul class="footer-links">
+          <li><a href="index.html#about">About Us</a></li>
+          <li><a href="index.html#testimonials">Reviews</a></li>
+          <li><a href="index.html#gallery">Gallery</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Contact Us</h5>
+        <div class="footer-contact-item">
+          <div class="contact-icon">&#128205;</div>
+          <span>San Pedro Town, Ambergris Caye,<br />Belize, Central America</span>
+        </div>
+        <div class="footer-contact-item">
+          <div class="contact-icon">&#128222;</div>
+          <span>+501 226-XXXX</span>
+        </div>
+        <div class="footer-contact-item">
+          <div class="contact-icon">&#9993;</div>
+          <span>hello@hookspearfire.com</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2025 Hook, Spear &amp; Fire Tours. All rights reserved.</p>
+      <ul class="footer-bottom-links">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+(function () {
+
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function () {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
+  navbar.classList.add('scrolled');
+
+  const toggle   = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  toggle.addEventListener('click', function () {
+    const open = navLinks.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+
+  const fadeEls = document.querySelectorAll('.fade-up');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    fadeEls.forEach(function (el) { observer.observe(el); });
+  } else {
+    fadeEls.forEach(function (el) { el.classList.add('visible'); });
+  }
+
+  const dateInput = document.getElementById('tourDate');
+  const today = new Date();
+  const yyyy  = today.getFullYear();
+  const mm    = String(today.getMonth() + 1).padStart(2, '0');
+  const dd    = String(today.getDate() + 1).padStart(2, '0');
+  dateInput.min = yyyy + '-' + mm + '-' + dd;
+
+  const tourOptions = {
+    snorkeling: [
+      { label: 'Private Reef Snorkeling', base: 95 },
+      { label: 'Guided Coral Reef Snorkeling', base: 55 },
+      { label: 'Shark & Ray Snorkeling', base: 75 },
+      { label: 'Beginner Snorkeling Lessons', base: 45 },
+      { label: 'Multi-Stop Reef Adventure', base: 110 },
+      { label: 'Sunset Snorkeling Tour', base: 85 }
+    ],
+    spearfishing: [
+      { label: 'Beginner Spearfishing Lessons', base: 95 },
+      { label: 'Guided Reef Spearfishing', base: 145 },
+      { label: 'Freedive Spearfishing Adventure', base: 225 },
+      { label: 'Lobster Hunting (Seasonal)', base: 175 },
+      { label: 'Catch-and-Cook Spearfishing', base: 195 }
+    ],
+    fishing: [
+      { label: 'Reef Fishing Trip', base: 325, perBoat: true },
+      { label: 'Deep Sea Fishing Charter', base: 850, perBoat: true },
+      { label: 'Half-Day Fishing Trip', base: 375, perBoat: true },
+      { label: 'Full-Day Fishing Adventure', base: 625, perBoat: true },
+      { label: 'Family-Friendly Fishing', base: 395, perBoat: true },
+      { label: 'Catch-and-Cook Fishing', base: 550, perBoat: true }
+    ],
+    catchcook: [
+      { label: 'Fish or Spearfish Your Meal', base: 135 },
+      { label: 'Beachside Cooking Experience', base: 85 },
+      { label: 'Private Island Picnic', base: 175 },
+      { label: 'Belizean Seafood Cooking Demo', base: 95 },
+      { label: 'Sunset Catch-and-Cook Dinner', base: 195 }
+    ]
+  };
+
+  const tourCards      = document.querySelectorAll('.tour-type-card');
+  const specificGroup  = document.getElementById('specificTourGroup');
+  const specificSelect = document.getElementById('specificTour');
+
+  let selectedCategory = null;
+  let selectedTour     = null;
+
+  tourCards.forEach(function (card) {
+    card.addEventListener('click', function () {
+      tourCards.forEach(function (c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      card.querySelector('input[type="radio"]').checked = true;
+      selectedCategory = card.querySelector('input').value;
+
+      const opts = tourOptions[selectedCategory];
+      specificSelect.innerHTML = '<option value="">Select a tour...</option>';
+      opts.forEach(function (t, i) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = t.label + (t.perBoat ? ' — from $' + t.base + '/boat' : ' — from $' + t.base + '/person');
+        specificSelect.appendChild(opt);
+      });
+      specificGroup.style.display = 'block';
+      selectedTour = null;
+      document.getElementById('priceEstimate').style.display = 'none';
+    });
+  });
+
+  specificSelect.addEventListener('change', function () {
+    if (!selectedCategory || specificSelect.value === '') {
+      selectedTour = null;
+      document.getElementById('priceEstimate').style.display = 'none';
+      return;
+    }
+    selectedTour = tourOptions[selectedCategory][parseInt(specificSelect.value)];
+    updatePriceEstimate();
+  });
+
+  let adults   = 2;
+  let children = 0;
+
+  document.querySelectorAll('.counter-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const target = btn.dataset.target;
+      const action = btn.dataset.action;
+      if (target === 'adults') {
+        adults = Math.max(1, action === 'plus' ? adults + 1 : adults - 1);
+        document.getElementById('adults-display').textContent = adults;
+        document.getElementById('adults').value = adults;
+      } else {
+        children = Math.max(0, action === 'plus' ? children + 1 : children - 1);
+        document.getElementById('children-display').textContent = children;
+        document.getElementById('children').value = children;
+      }
+      if (selectedTour) updatePriceEstimate();
+    });
+  });
+
+  function updatePriceEstimate() {
+    if (!selectedTour) return;
+    const est      = document.getElementById('priceEstimate');
+    const labelEl  = document.getElementById('estimateLabel');
+    const baseEl   = document.getElementById('estimateBase');
+    const childRow = document.getElementById('estimateChildRow');
+    const childEl  = document.getElementById('estimateChild');
+    const totalEl  = document.getElementById('estimateTotal');
+
+    let baseTotal  = 0;
+    let childTotal = 0;
+
+    if (selectedTour.perBoat) {
+      baseTotal = selectedTour.base;
+      labelEl.textContent = selectedTour.label + ' (per charter)';
+      baseEl.textContent  = '$' + baseTotal.toLocaleString();
+      childRow.style.display = 'none';
+    } else {
+      baseTotal  = selectedTour.base * adults;
+      childTotal = Math.round(selectedTour.base * 0.5 * children);
+      labelEl.textContent = selectedTour.label + ' x ' + adults + ' adult' + (adults !== 1 ? 's' : '');
+      baseEl.textContent  = '$' + baseTotal.toLocaleString();
+      if (children > 0) {
+        childRow.style.display = 'flex';
+        childEl.textContent    = '$' + childTotal.toLocaleString();
+      } else {
+        childRow.style.display = 'none';
+      }
+    }
+
+    totalEl.textContent = '$' + (baseTotal + childTotal).toLocaleString() + ' USD';
+    est.style.display   = 'block';
+  }
+
+  function setStep(n) {
+    [1, 2, 3].forEach(function (i) {
+      document.getElementById('formStep' + i).style.display = i === n ? 'block' : 'none';
+      const stepEl = document.getElementById('step' + i);
+      stepEl.classList.remove('active', 'done');
+      if (i === n) stepEl.classList.add('active');
+      if (i < n)  stepEl.classList.add('done');
+    });
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.getElementById('toStep2').addEventListener('click', function () {
+    if (!selectedCategory) {
+      alert('Please select a tour category before continuing.');
+      return;
+    }
+    if (!dateInput.value) {
+      alert('Please select a preferred date.');
+      dateInput.focus();
+      return;
+    }
+    setStep(2);
+  });
+
+  document.getElementById('backToStep1').addEventListener('click', function () { setStep(1); });
+  document.getElementById('toStep3').addEventListener('click', function () { setStep(3); });
+  document.getElementById('backToStep2').addEventListener('click', function () { setStep(2); });
+
+  document.getElementById('bookingForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const phone     = document.getElementById('phone').value.trim();
+    const agreed    = document.getElementById('agreeTerms').checked;
+
+    if (!firstName || !lastName) { alert('Please enter your full name.'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Please enter a valid email address.'); return; }
+    if (!phone) { alert('Please enter a phone number.'); return; }
+    if (!agreed) { alert('Please agree to the cancellation policy to continue.'); return; }
+
+    document.getElementById('formStep3').style.display = 'none';
+    [1,2,3].forEach(function (i) {
+      const s = document.getElementById('step' + i);
+      s.classList.remove('active');
+      s.classList.add('done');
+    });
+    document.getElementById('successScreen').style.display = 'block';
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+})();
+</script>
+</body>
+</html>
