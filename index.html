@@ -1125,29 +1125,20 @@
 
   /* ---- Panel Carousels ---- */
   document.querySelectorAll('.panel-carousel').forEach(function (carousel) {
-    var track = carousel.querySelector('.carousel-track');
-    var dots  = carousel.querySelectorAll('.carousel-dot');
+    var track   = carousel.querySelector('.carousel-track');
+    var dots    = carousel.querySelectorAll('.carousel-dot');
+    var total   = dots.length;
+    var current = 0;
 
-    function stepWidth() {
-      var img = track.querySelector('img');
-      return img ? img.offsetWidth + 10 : 0;
+    function goTo(n) {
+      current = (n + total) % total;
+      track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
     }
 
-    carousel.querySelector('.carousel-prev').addEventListener('click', function () {
-      track.scrollLeft -= stepWidth();
-    });
-    carousel.querySelector('.carousel-next').addEventListener('click', function () {
-      track.scrollLeft += stepWidth();
-    });
-    dots.forEach(function (dot, i) {
-      dot.addEventListener('click', function () { track.scrollLeft = i * stepWidth(); });
-    });
-    track.addEventListener('scroll', function () {
-      var w = stepWidth();
-      if (!w) return;
-      var idx = Math.min(Math.round(track.scrollLeft / w), dots.length - 1);
-      dots.forEach(function (d, i) { d.classList.toggle('active', i === idx); });
-    });
+    carousel.querySelector('.carousel-prev').addEventListener('click', function () { goTo(current - 1); });
+    carousel.querySelector('.carousel-next').addEventListener('click', function () { goTo(current + 1); });
+    dots.forEach(function (dot, i) { dot.addEventListener('click', function () { goTo(i); }); });
   });
 
   /* ---- Gallery Lightbox ---- */
