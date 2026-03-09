@@ -441,7 +441,7 @@ section { padding: 6rem 0; }
 
 .about-images {
   position: relative;
-  padding-bottom: 35%;
+  padding-bottom: 50%;
 }
 
 .about-img-main {
@@ -462,10 +462,20 @@ section { padding: 6rem 0; }
   box-shadow: var(--shadow-lg);
 }
 
+.about-img-third {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 42%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 5px solid var(--white);
+  box-shadow: var(--shadow-lg);
+}
+
 .about-badge {
   position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-20%, -50%);
+  top: 57%; left: 44%;
+  transform: translate(-50%, -50%);
   background: linear-gradient(135deg, var(--coral), var(--ember));
   color: var(--white);
   width: 90px; height: 90px;
