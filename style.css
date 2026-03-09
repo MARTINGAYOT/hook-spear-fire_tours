@@ -181,25 +181,20 @@ p { font-size: 1.05rem; color: var(--text-mid); }
 
 .nav-logo {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   line-height: 1;
 }
 
-.nav-logo-main {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: var(--white);
-  letter-spacing: .02em;
+.nav-logo-img {
+  height: 52px;
+  width: auto;
+  display: block;
 }
 
-.nav-logo-sub {
-  font-size: .68rem;
-  font-weight: 500;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--aqua);
-  margin-top: .1rem;
+.footer-logo-img {
+  height: 100px;
+  width: auto;
+  display: block;
 }
 
 .nav-links {
@@ -1094,7 +1089,6 @@ section { padding: 6rem 0; }
   margin-bottom: 3.5rem;
 }
 
-.footer-brand .nav-logo-main { font-size: 1.4rem; margin-bottom: .25rem; }
 
 .footer-tagline {
   font-size: .92rem;

@@ -18,8 +18,7 @@
 <nav class="navbar" id="navbar">
   <div class="container nav-inner">
     <a href="index.html" class="nav-logo">
-      <span class="nav-logo-main">Hook, Spear &amp; Fire</span>
-      <span class="nav-logo-sub">San Pedro, Belize</span>
+      <img src="Hook, Spear &amp; Fire Logo.jpg" alt="Hook, Spear &amp; Fire Tours" class="nav-logo-img" />
     </a>
 
     <ul class="nav-links" id="navLinks">
@@ -992,8 +991,7 @@
 
       <div class="footer-brand">
         <div class="nav-logo">
-          <span class="nav-logo-main">Hook, Spear &amp; Fire</span>
-          <span class="nav-logo-sub">San Pedro, Belize</span>
+          <img src="Hook, Spear &amp; Fire Logo.jpg" alt="Hook, Spear &amp; Fire Tours" class="footer-logo-img" />
         </div>
         <p class="footer-tagline">
           Family-owned since 2009. We live on this reef,
@@ -1125,20 +1123,62 @@
 
   /* ---- Panel Carousels ---- */
   document.querySelectorAll('.panel-carousel').forEach(function (carousel) {
-    var track   = carousel.querySelector('.carousel-track');
-    var dots    = carousel.querySelectorAll('.carousel-dot');
-    var total   = dots.length;
-    var current = 0;
+    var track = carousel.querySelector('.carousel-track');
+    var dots  = carousel.querySelectorAll('.carousel-dot');
+    var total = dots.length;
 
-    function goTo(n) {
-      current = (n + total) % total;
-      track.style.transform = 'translateX(-' + (current * 100) + '%)';
-      dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
+    // Clone first and last slides for seamless infinite loop
+    // Track layout: [lastClone, slide0, slide1, ..., slideN, firstClone]
+    var slides    = Array.from(track.querySelectorAll('img'));
+    var firstClone = slides[0].cloneNode(true);
+    var lastClone  = slides[slides.length - 1].cloneNode(true);
+    track.appendChild(firstClone);
+    track.insertBefore(lastClone, slides[0]);
+
+    var pos = 1; // position in extended array; 1 = real slide 0
+
+    function moveTo(p, animate) {
+      track.style.transition = animate ? 'transform .45s cubic-bezier(.4,0,.2,1)' : 'none';
+      track.style.transform  = 'translateX(-' + (p * 100) + '%)';
     }
 
-    carousel.querySelector('.carousel-prev').addEventListener('click', function () { goTo(current - 1); });
-    carousel.querySelector('.carousel-next').addEventListener('click', function () { goTo(current + 1); });
-    dots.forEach(function (dot, i) { dot.addEventListener('click', function () { goTo(i); }); });
+    function updateDots(realIdx) {
+      dots.forEach(function (d, i) { d.classList.toggle('active', i === realIdx); });
+    }
+
+    moveTo(pos, false); // init without animation
+
+    track.addEventListener('transitionend', function () {
+      if (pos === 0) {           // was showing lastClone, snap to real last slide
+        pos = total;
+        moveTo(pos, false);
+      } else if (pos === total + 1) { // was showing firstClone, snap to real first slide
+        pos = 1;
+        moveTo(pos, false);
+      }
+    });
+
+    carousel.querySelector('.carousel-prev').addEventListener('click', function () {
+      pos--;
+      var realIdx = pos === 0 ? total - 1 : pos - 1;
+      moveTo(pos, true);
+      updateDots(realIdx);
+    });
+
+    carousel.querySelector('.carousel-next').addEventListener('click', function () {
+      pos++;
+      var realIdx = pos === total + 1 ? 0 : pos - 1;
+      moveTo(pos, true);
+      updateDots(realIdx);
+    });
+
+    dots.forEach(function (dot, i) {
+      dot.addEventListener('click', function () {
+        pos = i + 1;
+        moveTo(pos, true);
+        updateDots(i);
+      });
+    });
   });
 
   /* ---- Gallery Lightbox ---- */
