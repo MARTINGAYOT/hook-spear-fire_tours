@@ -1206,7 +1206,7 @@ section { padding: 6rem 0; }
 .reservations-hero {
   background:
     linear-gradient(160deg, rgba(8,28,46,.95) 0%, rgba(0,77,110,.85) 100%),
-    url('https://images.unsplash.com/photo-1559548331-f9cb98001426?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    url('images/reservations.jpg') center/cover no-repeat;
   padding: 9rem 0 5rem;
   text-align: center;
   color: var(--white);
