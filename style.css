@@ -260,7 +260,7 @@ p { font-size: 1.05rem; color: var(--text-mid); }
   align-items: center;
   background:
     linear-gradient(160deg, rgba(8,28,46,.75) 0%, rgba(0,119,168,.40) 60%, rgba(0,180,216,.15) 100%),
-    url('reef-hero.jpg') center/cover no-repeat;
+    url('images/reef-hero.jpg') center/cover no-repeat;
   overflow: hidden;
 }
 
