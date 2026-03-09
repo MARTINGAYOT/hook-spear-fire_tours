@@ -186,13 +186,13 @@ p { font-size: 1.05rem; color: var(--text-mid); }
 }
 
 .nav-logo-img {
-  height: 54px;
+  height: 70px;
   width: auto;
   display: block;
 }
 
 .footer-logo-img {
-  height: 120px;
+  height: 150px;
   width: auto;
   display: block;
 }
