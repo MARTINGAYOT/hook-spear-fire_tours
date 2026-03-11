@@ -626,8 +626,10 @@ section { padding: 6rem 0; }
 }
 
 .service-panel-header {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 2.5rem;
+  align-items: start;
   margin-bottom: 0;
   background: linear-gradient(135deg, var(--navy) 0%, var(--deep-blue) 100%);
   border-radius: 0;
@@ -637,11 +639,10 @@ section { padding: 6rem 0; }
 }
 
 .panel-header-top {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: center;
-  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  padding-bottom: 0;
 }
 
 /* ---- Panel Photo Carousel ---- */
@@ -649,12 +650,12 @@ section { padding: 6rem 0; }
   position: relative;
   border-radius: var(--radius-md);
   overflow: hidden;
-  margin-top: .25rem;
+  aspect-ratio: 4 / 3;
 }
 
 .carousel-track {
   display: flex;
-  height: 360px;
+  height: 100%;
   transition: transform .45s cubic-bezier(.4,0,.2,1);
 }
 
@@ -731,7 +732,7 @@ section { padding: 6rem 0; }
 .panel-header-text p  { color: rgba(255,255,255,.75); font-size: 1rem; }
 
 .panel-price-range {
-  text-align: center;
+  text-align: left;
   position: relative;
   z-index: 1;
 }
@@ -1621,7 +1622,8 @@ textarea.form-control {
 
   .hero-stats { gap: 1.5rem; }
 
-  .panel-header-top { grid-template-columns: 1fr; }
+  .service-panel-header { grid-template-columns: 1fr; }
+  .panel-header-top { gap: 1.25rem; }
   .panel-price-range { text-align: left; }
   .service-panel-header { padding: 2rem; }
   .services-grid { padding: 1.25rem 1.25rem 2rem; }
