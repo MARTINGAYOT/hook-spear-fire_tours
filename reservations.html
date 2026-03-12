@@ -66,33 +66,72 @@
 
     .tour-type-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: .85rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 1px solid #dce8f0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
       margin-bottom: 1.25rem;
     }
     .tour-type-card {
-      border: 2px solid #dde8f0;
-      border-radius: var(--radius-md);
-      padding: 1.1rem;
-      cursor: pointer;
-      transition: var(--transition);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: .85rem;
-      background: var(--white);
+      justify-content: center;
+      gap: .4rem;
+      padding: 1.5rem .75rem 1.25rem;
+      cursor: pointer;
+      border: none;
+      border-top: 4px solid transparent;
+      border-right: 1px solid #dce8f0;
+      background: transparent;
+      transition: background .25s, border-top-color .25s;
+      text-align: center;
     }
-    .tour-type-card:hover {
-      border-color: var(--turquoise);
-      background: rgba(0,180,216,.04);
+    .tour-type-card:last-child { border-right: none; }
+    .tour-type-card input[type="radio"] { display: none; }
+    .tour-type-card:hover:not(.selected) {
+      background: #eaf2f7;
+      border-top-color: rgba(255,92,53,.35);
     }
     .tour-type-card.selected {
-      border-color: var(--ocean);
-      background: rgba(0,119,168,.06);
+      background: var(--navy);
+      border-top-color: var(--coral);
     }
-    .tour-type-card input[type="radio"] { display: none; }
-    .tour-card-icon { font-size: 1.6rem; }
-    .tour-card-text strong { display: block; font-size: .92rem; color: var(--navy); font-weight: 600; }
-    .tour-card-text span   { font-size: .78rem; color: var(--text-light); }
+    .tour-num {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--text-light);
+    }
+    .tour-type-card.selected .tour-num { color: rgba(255,255,255,.4); }
+    .tour-card-svg {
+      width: 38px; height: 38px;
+      color: var(--text-light);
+      transition: color .25s, transform .25s;
+    }
+    .tour-type-card:hover:not(.selected) .tour-card-svg {
+      color: var(--ocean);
+      transform: translateY(-3px) scale(1.1);
+    }
+    .tour-type-card.selected .tour-card-svg {
+      color: var(--coral);
+      transform: translateY(-2px) scale(1.06);
+    }
+    .tour-card-name {
+      font-family: var(--font-display);
+      font-size: .82rem;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--navy);
+      display: block;
+    }
+    .tour-type-card.selected .tour-card-name { color: var(--white); }
+    .tour-card-price {
+      font-size: .7rem;
+      color: var(--text-light);
+    }
+    .tour-type-card.selected .tour-card-price { color: rgba(255,255,255,.5); }
 
     .guest-counter {
       display: flex;
@@ -183,7 +222,10 @@
     }
 
     @media (max-width: 600px) {
-      .tour-type-grid { grid-template-columns: 1fr; }
+      .tour-type-grid { grid-template-columns: repeat(2, 1fr); }
+      .tour-type-card:nth-child(2) { border-right: none; }
+      .tour-type-card:nth-child(3) { border-top: 1px solid #dce8f0; }
+      .tour-type-card:nth-child(4) { border-top: 1px solid #dce8f0; border-right: none; }
     }
   </style>
 </head>
@@ -254,38 +296,51 @@
 
             <label class="tour-type-card" id="card-snorkeling">
               <input type="radio" name="tourCategory" value="snorkeling" />
-              <span class="tour-card-icon">&#128027;</span>
-              <div class="tour-card-text">
-                <strong>Snorkeling Tours</strong>
-                <span>From $55 / person</span>
-              </div>
+              <span class="tour-num">01</span>
+              <svg class="tour-card-svg" viewBox="0 0 48 30" fill="none" aria-hidden="true">
+                <rect x="2" y="5" width="44" height="20" rx="7" stroke="currentColor" stroke-width="2"/>
+                <circle cx="15" cy="15" r="6.5" stroke="currentColor" stroke-width="2"/>
+                <circle cx="33" cy="15" r="6.5" stroke="currentColor" stroke-width="2"/>
+                <line x1="21.5" y1="15" x2="26.5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <strong class="tour-card-name">Snorkeling Tours</strong>
+              <span class="tour-card-price">From $55 / person</span>
             </label>
 
             <label class="tour-type-card" id="card-spearfishing">
               <input type="radio" name="tourCategory" value="spearfishing" />
-              <span class="tour-card-icon">&#127919;</span>
-              <div class="tour-card-text">
-                <strong>Spearfishing</strong>
-                <span>From $85 / person</span>
-              </div>
+              <span class="tour-num">02</span>
+              <svg class="tour-card-svg" viewBox="0 0 32 44" fill="none" aria-hidden="true">
+                <line x1="16" y1="2" x2="16" y2="42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="4" y1="18" x2="28" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="4" y1="2" x2="4" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="28" y1="2" x2="28" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <strong class="tour-card-name">Spearfishing</strong>
+              <span class="tour-card-price">From $85 / person</span>
             </label>
 
             <label class="tour-type-card" id="card-fishing">
               <input type="radio" name="tourCategory" value="fishing" />
-              <span class="tour-card-icon">&#127907;</span>
-              <div class="tour-card-text">
-                <strong>Fishing Charters</strong>
-                <span>From $525 / charter</span>
-              </div>
+              <span class="tour-num">03</span>
+              <svg class="tour-card-svg" viewBox="0 0 44 48" fill="none" aria-hidden="true">
+                <line x1="6" y1="2" x2="40" y2="26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="40" y1="26" x2="34" y2="38" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M34 38 C34 45 42 45 42 38" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <line x1="42" y1="38" x2="38" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <strong class="tour-card-name">Fishing Charters</strong>
+              <span class="tour-card-price">From $525 / charter</span>
             </label>
 
             <label class="tour-type-card" id="card-catchcook">
               <input type="radio" name="tourCategory" value="catchcook" />
-              <span class="tour-card-icon">&#128293;</span>
-              <div class="tour-card-text">
-                <strong>Catch &amp; Cook</strong>
-                <span>From $85 / person</span>
-              </div>
+              <span class="tour-num">04</span>
+              <svg class="tour-card-svg" viewBox="0 0 28 40" fill="none" aria-hidden="true">
+                <path d="M14 38 C6 38 4 30 8 22 C10 18 10 14 8 10 C13 14 14 20 16 18 C18 14 18 8 14 4 C24 12 24 28 20 34 C22 30 22 22 20 18 C24 26 24 36 14 38 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
+              </svg>
+              <strong class="tour-card-name">Catch &amp; Cook</strong>
+              <span class="tour-card-price">From $85 / person</span>
             </label>
 
           </div>
