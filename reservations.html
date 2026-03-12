@@ -151,10 +151,29 @@
       color: var(--navy);
       transition: var(--transition);
     }
-    .counter-btn:hover {
+    .counter-btn:hover:not(:disabled) {
       background: var(--navy);
       border-color: var(--navy);
       color: var(--white);
+    }
+    .counter-btn:disabled {
+      opacity: .3;
+      cursor: not-allowed;
+    }
+    #capacity-note {
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+      padding: .4rem .75rem;
+      border-radius: 6px;
+      background: #f0f5f9;
+      color: var(--text-mid);
+      margin-top: -.25rem;
+      margin-bottom: .75rem;
+    }
+    #capacity-note.at-max {
+      background: #fff0ec;
+      color: var(--coral);
     }
     .counter-value {
       font-family: var(--font-display);
@@ -404,6 +423,8 @@
               </div>
             </div>
           </div>
+
+          <div id="capacity-note" style="display:none;"></div>
 
           <div class="form-section-title">Experience &amp; Preferences</div>
 
@@ -731,36 +752,36 @@
 
   const tourOptions = {
     snorkeling: [
-      { label: 'Private Reef Snorkeling', base: 125 },
-      { label: 'Guided Coral Reef Snorkeling', base: 65 },
-      { label: 'Shark & Ray Snorkeling', base: 75 },
-      { label: 'Beginner Snorkeling Lessons', base: 55 },
-      { label: 'Multi-Stop Reef Adventure', base: 195 },
+      { label: 'Private Reef Snorkeling', base: 125, max: 14 },
+      { label: 'Guided Coral Reef Snorkeling', base: 65, max: 14 },
+      { label: 'Shark & Ray Snorkeling', base: 75, max: 14 },
+      { label: 'Beginner Snorkeling Lessons', base: 55, max: 14 },
+      { label: 'Multi-Stop Reef Adventure', base: 195, max: 14 },
       { label: 'Sunset Snorkeling Tour', base: 85 }
     ],
     spearfishing: [
-      { label: 'Beginner Spearfishing Lessons', base: 95 },
-      { label: 'Guided Reef Spearfishing', base: 145 },
-      { label: 'Freedive Spearfishing Adventure', base: 225 },
-      { label: 'Lionfish Hunt', base: 85 },
-      { label: 'Lobster Hunt (Seasonal)', base: 175 },
-      { label: 'Spearfishing Catch & Cook', base: 195 }
+      { label: 'Beginner Spearfishing Lessons', base: 95, max: 10 },
+      { label: 'Guided Reef Spearfishing', base: 145, max: 10 },
+      { label: 'Freedive Spearfishing Adventure', base: 225, max: 8, noKids: true },
+      { label: 'Lionfish Hunt', base: 85, max: 10 },
+      { label: 'Lobster Hunt Catch & Cook', base: 175, max: 10 },
+      { label: 'Spearfishing Catch & Cook', base: 195, max: 10 }
     ],
     fishing: [
-      { label: 'Half-day Fishing Trip (Reef)', base: 525, perBoat: true },
-      { label: 'Full-day Fishing Trip (Reef)', base: 825, perBoat: true },
-      { label: 'Deep-sea Fishing Trip', base: 1050, perBoat: true },
-      { label: 'Half-day Fly Fishing Trip (Flats)', base: 575, perBoat: true },
-      { label: 'Full-day Fly Fishing Trip (Flats)', base: 795, perBoat: true },
-      { label: 'Catch & Cook Fishing', base: 750, perBoat: true }
+      { label: 'Half-day Fishing Trip (Reef)', base: 525, perBoat: true, max: 10 },
+      { label: 'Full-day Fishing Trip (Reef)', base: 825, perBoat: true, max: 10 },
+      { label: 'Deep-sea Fishing Trip', base: 1050, perBoat: true, max: 10 },
+      { label: 'Half-day Fly Fishing Trip (Flats)', base: 575, perBoat: true, max: 10 },
+      { label: 'Full-day Fly Fishing Trip (Flats)', base: 795, perBoat: true, max: 10 },
+      { label: 'Fishing Catch & Cook', base: 750, perBoat: true, max: 10 }
     ],
     catchcook: [
-      { label: 'Spearfishing Catch & Cook', base: 135 },
-      { label: 'Fishing Catch & Cook', base: 85 },
-      { label: 'Lobster Hunt Catch & Cook', base: 175 },
-      { label: 'Private Island Piknik', base: 175 },
-      { label: 'Belizean Seafood Cooking Demo', base: 95 },
-      { label: 'Sunset Catch & Cook', base: 195 }
+      { label: 'Spearfishing Catch & Cook', base: 135, max: 10 },
+      { label: 'Fishing Catch & Cook', base: 85, max: 10 },
+      { label: 'Lobster Hunt Catch & Cook', base: 175, max: 10 },
+      { label: 'Private Island Piknik', base: 175, max: 14 },
+      { label: 'Belizean Seafood Cooking Demo', base: 95, max: 14 },
+      { label: 'Sunset Catch & Cook', base: 195, max: 14 }
     ]
   };
 
@@ -796,28 +817,73 @@
     if (!selectedCategory || specificSelect.value === '') {
       selectedTour = null;
       document.getElementById('priceEstimate').style.display = 'none';
+      updateCounterLimits();
       return;
     }
     selectedTour = tourOptions[selectedCategory][parseInt(specificSelect.value)];
+    updateCounterLimits();
     updatePriceEstimate();
   });
 
   let adults   = 2;
   let children = 0;
 
+  function updateCounterLimits() {
+    var max    = (selectedTour && selectedTour.max) ? selectedTour.max : Infinity;
+    var noKids = selectedTour && selectedTour.noKids;
+    var total  = adults + children;
+    var noteEl = document.getElementById('capacity-note');
+    var adultsPlusBtn   = document.querySelector('.counter-btn[data-target="adults"][data-action="plus"]');
+    var childrenPlusBtn = document.querySelector('.counter-btn[data-target="children"][data-action="plus"]');
+
+    if (noKids && children > 0) {
+      children = 0;
+      document.getElementById('children-display').textContent = 0;
+      document.getElementById('children').value = 0;
+      total = adults;
+    }
+
+    adultsPlusBtn.disabled   = total >= max;
+    childrenPlusBtn.disabled = noKids || total >= max;
+
+    if (!selectedTour || !selectedTour.max) {
+      noteEl.style.display = 'none';
+      return;
+    }
+    noteEl.style.display = 'block';
+    noteEl.classList.remove('at-max');
+    if (noKids && total >= max) {
+      noteEl.textContent = 'Adults only \u00b7 Maximum capacity reached (' + max + ')';
+      noteEl.classList.add('at-max');
+    } else if (noKids) {
+      noteEl.textContent = 'Adults only \u00b7 ' + (max - total) + ' spot' + (max - total !== 1 ? 's' : '') + ' remaining (max ' + max + ')';
+    } else if (total >= max) {
+      noteEl.textContent = 'Maximum capacity reached (' + max + ' guests)';
+      noteEl.classList.add('at-max');
+    } else {
+      noteEl.textContent = (max - total) + ' spot' + (max - total !== 1 ? 's' : '') + ' remaining \u00b7 max ' + max + ' guests';
+    }
+  }
+
   document.querySelectorAll('.counter-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      const target = btn.dataset.target;
-      const action = btn.dataset.action;
+      var target = btn.dataset.target;
+      var action = btn.dataset.action;
+      var max    = (selectedTour && selectedTour.max) ? selectedTour.max : Infinity;
+      var total  = adults + children;
       if (target === 'adults') {
+        if (action === 'plus' && total >= max) return;
         adults = Math.max(1, action === 'plus' ? adults + 1 : adults - 1);
         document.getElementById('adults-display').textContent = adults;
         document.getElementById('adults').value = adults;
       } else {
+        if (action === 'plus' && (selectedTour && selectedTour.noKids)) return;
+        if (action === 'plus' && total >= max) return;
         children = Math.max(0, action === 'plus' ? children + 1 : children - 1);
         document.getElementById('children-display').textContent = children;
         document.getElementById('children').value = children;
       }
+      updateCounterLimits();
       if (selectedTour) updatePriceEstimate();
     });
   });
